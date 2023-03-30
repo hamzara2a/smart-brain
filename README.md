@@ -27,7 +27,7 @@ https://github.com/hamzara2a/smart-brain-server
 
 * React: https://ja.reactjs.org/
 * Clarifai API: https://www.clarifai.com/
-* Tachyons: for CSS styling
+* Tachyons: CSSを追加するため
 
 ### サーバーのコード
 https://github.com/hamzara2a/smart-brain-server
