@@ -15,7 +15,7 @@ https://github.com/hamzara2a/smart-brain-server
 
 -----------
 
-要約
+## 要約
 
 このプロジェクトはReactを使って作りました。このプログラムはアプロードした写真を分析して、顔があるかどうか伝えられる。
 
@@ -29,5 +29,5 @@ https://github.com/hamzara2a/smart-brain-server
 * Clarifai API: https://www.clarifai.com/
 * Tachyons: for CSS styling
 
-## サーバーのコード
+### サーバーのコード
 https://github.com/hamzara2a/smart-brain-server
