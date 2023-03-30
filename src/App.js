@@ -14,7 +14,7 @@ import './App.css';
 const initialState = {
   input: "",
   imageUrl: "",
-  box: {},
+  boxes: [],
   imageBox: "",
   isSignedIn: false,
   route: "signin",
@@ -53,28 +53,36 @@ class App extends Component {
 
 
 //CALCULATE PARAMETERS OF FACE BOX-------------------------------------------------
-  faceCalculate = (data) => {
+  facesCalculate = (data) => {
 
-    const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById("inputImage");
-    const width = Number(image.width);
-    const height = Number(image.height);
-    return {
-      leftcol: clarifaiFace.left_col * width,
-      toprow: clarifaiFace.top_row * height,
-      rightcol: width - (clarifaiFace.right_col * width),
-      bottomrow: height - (clarifaiFace.bottom_row * height)
+    if (data && data.outputs) {
+      return data.outputs[0].data.regions.map(face => {
+
+        const clarifaiFace =face.region_info.bounding_box;
+        
+        const image = document.getElementById("inputImage");
+        const width = Number(image.width);
+        const height = Number(image.height);
+        return {
+          leftcol: clarifaiFace.left_col * width,
+          toprow: clarifaiFace.top_row * height,
+          rightcol: width - (clarifaiFace.right_col * width),
+          bottomrow: height - (clarifaiFace.bottom_row * height)
+        }
+      })
     }
-
+    return;
   }
 
 
 
 
 //INSERT THE BOX ITSELF-------------------------------------------------
-  displayFaceBox = (box) => {
-    console.log(box);
-    this.setState({box: box});
+  displayFaceBoxes = (boxes) => {
+
+    if(boxes) {
+      this.setState({boxes: boxes});
+    }
   }
   
 
@@ -95,36 +103,6 @@ class App extends Component {
   //clarifai code-----------------------------
     this.setState({imageUrl: this.state.input})
 
-   /* const raw = JSON.stringify({
-      "user_app_id": {
-            "user_id": "hamza_pr1vate",
-            "app_id": "90321c1278564c51b7a9fd75c5dc0b81"
-        },
-      "inputs": [
-        {
-          "data": {
-            "image": {
-              "url": this.state.input
-            }
-          }
-        }
-      ]
-    });
-  
-
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Key ecee7cc9849844b28fafcc27c7cc7555'
-      },
-      body: raw
-    };
-    //end of clarifai code-----------------------------
-
-    
-    fetch("https://api.clarifai.com/v2/models/face-detection/outputs", requestOptions) 
-    */
 
     fetch('http://localhost:3000/imageurl', {
         method: 'post',
@@ -136,7 +114,7 @@ class App extends Component {
     .then(response => response.json())   
     .then(result => {
 
-      this.displayFaceBox(this.faceCalculate(result))
+      this.displayFaceBoxes(this.facesCalculate(result))
 
       fetch('http://localhost:3000/image', {
               method: 'put',
@@ -173,7 +151,7 @@ class App extends Component {
 
 //RENDER EVERYTHING NOW!-------------------------------------------
   render() { 
-    const { route, isSignedIn, imageUrl, box } = this.state;
+    const { route, isSignedIn, imageUrl, boxes } = this.state;
 
     return (
       
@@ -192,7 +170,7 @@ class App extends Component {
           onButtonSubmit={this.onButtonSubmit}
           />
 
-          <FaceRecognition box={box} imageUrl={imageUrl} />
+          <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
 
         </div> 
       : (
